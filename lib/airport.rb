@@ -11,6 +11,7 @@ class Airport
   def initialize(capacity = DEFAULT_CAPACITY)
     @planes = []
     @capacity = capacity
+    @weather = Weather
   end
 
   def land_plane(plane)
@@ -23,7 +24,7 @@ class Airport
 
   def take_off(plane)
     raise "All planes are grounded until further notice due to bad weather" if stormy?
-    raise "Plane cannot take off as it is not currently in this airport" unless planes.include? plane
+    raise "Plane cannot take off as it is not currently in this airport" if planes_in_airport(plane)
     plane.take_off
     planes.pop
     plane
@@ -31,15 +32,18 @@ class Airport
 
 private
 
-attr_reader :capacity
+attr_reader :capacity, :weather
 
   def full?
     planes.count >= capacity
   end
 
   def stormy?
-    Weather.new.stormy?
+    weather.new.stormy?
   end
 
+  def planes_in_airport(plane)
+    !planes.include? plane
+  end
 
 end
